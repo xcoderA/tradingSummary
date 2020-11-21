@@ -19,7 +19,7 @@ public class OutputAggregator {
             log.debug("outputRecord is not found, adding to the list");
             outputList.add(outputRecord);
         } else {
-            log.debug("outputRecord already exists. Incrementign the transaction amount");
+            log.debug("outputRecord already exists. Incrementing the transaction amount");
             outputList.get(index).incrementTransactionAmount(outputRecord.getTotalTransactionAmount());
         }
     }

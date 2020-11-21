@@ -36,7 +36,7 @@ public class OutputWriter {
                     log.error("Exception occurred when writing to output file: ", e);
                 }
             });
-            log.info("successfully created Output.txt");
+            log.info("successfully created output file {}",fileHelper.getOutputFilePath());
         } finally {
             writer.close();
         }
