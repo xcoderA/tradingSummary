@@ -4,11 +4,11 @@ import com.trading.tradingsummary.TradingSummaryApplication;
 import com.trading.tradingsummary.output.OutputAggregator;
 import com.trading.tradingsummary.output.OutputRecord;
 
-public class RecordProcessor implements Runnable {
+public class InputRecordProcessor implements Runnable {
 
     InputRecord inputRecord;
 
-    public RecordProcessor(InputRecord inputRecord) {
+    public InputRecordProcessor(InputRecord inputRecord) {
         this.inputRecord = inputRecord;
     }
 
@@ -20,6 +20,4 @@ public class RecordProcessor implements Runnable {
         OutputAggregator.addToOutput(new OutputRecord(clientInformation, productInformation, netTotal));
         TradingSummaryApplication.countDown();
     }
-
-
 }

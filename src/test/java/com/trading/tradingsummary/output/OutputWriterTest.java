@@ -2,7 +2,6 @@ package com.trading.tradingsummary.output;
 
 import com.trading.tradingsummary.util.FileHelper;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class OutputWriterTest {
     public void setup() {
         outputList = new ArrayList<>();
         outputList.add(new OutputRecord("abc", "def", 10));
-        outputWriter = spy(new OutputWriter(outputList));
+        outputWriter = spy(new OutputWriter());
     }
 
     @Test
@@ -48,9 +46,9 @@ public class OutputWriterTest {
         given(fileHelper.getOutputWriter()).willReturn(writer);
         outputWriter.fileHelper = fileHelper;
 
-        outputWriter.createOutputFile();
+        outputWriter.createOutputFile(outputList);
 
-       verify(writer).write(outputLineCaptor.capture());
+        verify(writer).write(outputLineCaptor.capture());
         assertThat(outputLineCaptor.getValue(), Matchers.is("abc,def,10\n"));
 
     }

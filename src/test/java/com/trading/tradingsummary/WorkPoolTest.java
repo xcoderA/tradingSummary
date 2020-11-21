@@ -20,7 +20,9 @@ public class WorkPoolTest {
         WorkPool workPool = new WorkPool(10);
         Executor threadPool = Mockito.spy(workPool.threadPool);
         workPool.threadPool = threadPool;
+
         workPool.addToPool(runnable);
+
         Mockito.verify(workPool.threadPool, Mockito.times(1)).execute(runnable);
     }
 }

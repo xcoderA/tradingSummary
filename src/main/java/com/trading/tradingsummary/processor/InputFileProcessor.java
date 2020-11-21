@@ -9,9 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
+/**
+ * Process input file into records and add to workpool.
+ */
 @Component
 @Slf4j
-public class FileProcessor {
+public class InputFileProcessor {
     @Autowired
     private WorkPool workPool;
 
@@ -19,8 +22,8 @@ public class FileProcessor {
         try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                RecordProcessor recordProcessor = new RecordProcessor(new InputRecord(line));
-                workPool.addToPool(recordProcessor);
+                InputRecordProcessor inputRecordProcessor = new InputRecordProcessor(new InputRecord(line));
+                workPool.addToPool(inputRecordProcessor);
             }
         }
     }

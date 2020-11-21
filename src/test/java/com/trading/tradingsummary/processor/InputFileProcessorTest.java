@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -20,19 +19,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FileProcessorTest {
+public class InputFileProcessorTest {
 
     @Mock
     WorkPool workPool;
 
     @InjectMocks
-    FileProcessor fileProcessor;
-
-    @Mock
-    File file;
+    InputFileProcessor inputFileProcessor;
 
     @Captor
-    ArgumentCaptor<RecordProcessor> captor;
+    ArgumentCaptor<InputRecordProcessor> captor;
 
 
     @Test
@@ -41,10 +37,10 @@ public class FileProcessorTest {
         InputRecord inputRecord = new InputRecord(line);
         Reader reader = new StringReader(line);
 
-        fileProcessor.process(reader);
+        inputFileProcessor.process(reader);
 
         verify(workPool).addToPool(captor.capture());
-        RecordProcessor processor = captor.getValue();
+        InputRecordProcessor processor = captor.getValue();
         assertThat(processor.inputRecord.getAccountNumber(), Matchers.is(inputRecord.getAccountNumber()));
         assertThat(processor.inputRecord.getQuantityLongSign(), Matchers.is(inputRecord.getQuantityLongSign()));
         assertThat(processor.inputRecord.getQuantityShortSign(), Matchers.is(inputRecord.getQuantityShortSign()));
@@ -58,5 +54,4 @@ public class FileProcessorTest {
         assertThat(processor.inputRecord.getClientNumber(), Matchers.is(inputRecord.getClientNumber()));
         assertThat(processor.inputRecord.getSubAccountNumber(), Matchers.is(inputRecord.getSubAccountNumber()));
     }
-
 }

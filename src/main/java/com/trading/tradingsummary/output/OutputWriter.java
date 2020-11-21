@@ -2,26 +2,28 @@ package com.trading.tradingsummary.output;
 
 import com.trading.tradingsummary.util.FileHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
 @Slf4j
+@Component
 public class OutputWriter {
 
     private static String COMMA = ",";
     private static String END_OF_LINE = "\n";
-    List<OutputRecord> outputList;
+    @Autowired
     FileHelper fileHelper;
 
-    public OutputWriter(List<OutputRecord> outputList) {
-        this.outputList = outputList;
+    public OutputWriter() {
         fileHelper = new FileHelper();
     }
 
 
-    public void createOutputFile() throws IOException {
+    public void createOutputFile(List<OutputRecord> outputList) throws IOException {
         Writer writer = fileHelper.getOutputWriter();
         log.info("outputfile has {} lines", outputList.size());
         try {
@@ -38,8 +40,6 @@ public class OutputWriter {
         } finally {
             writer.close();
         }
-
-
     }
 
 }

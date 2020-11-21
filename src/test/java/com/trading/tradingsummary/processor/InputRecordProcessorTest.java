@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RecordProcessorTest {
+public class InputRecordProcessorTest {
 
     @Test
     public void shouldAddToOutputAndCountdown() {
@@ -23,8 +23,8 @@ public class RecordProcessorTest {
         try (MockedStatic<OutputAggregator> aggregatorMockedStatic = Mockito.mockStatic(OutputAggregator.class)) {
             try (MockedStatic<TradingSummaryApplication> tradingSummaryApplicationMockedStatic = Mockito.mockStatic(com.trading.tradingsummary.TradingSummaryApplication.class)) {
                 ArgumentCaptor<OutputRecord> captor = ArgumentCaptor.forClass(OutputRecord.class);
-                RecordProcessor recordProcessor = new RecordProcessor(inputRecord);
-                recordProcessor.run();
+                InputRecordProcessor inputRecordProcessor = new InputRecordProcessor(inputRecord);
+                inputRecordProcessor.run();
                 aggregatorMockedStatic.verify(() -> OutputAggregator.addToOutput(captor.capture()));
                 assertThat(captor.getValue().getClientInformation(), is(new StringBuilder(inputRecord.getClientType()).append(inputRecord.getClientNumber()).append(inputRecord.getAccountNumber()).append(inputRecord.getSubAccountNumber()).toString()));
                 assertThat(captor.getValue().getProductInformation(), is(new StringBuilder(inputRecord.getExchangeCode()).append(inputRecord.getProductGroupCode()).append(inputRecord.getSymbol()).append(inputRecord.getExpirationDate()).toString()));

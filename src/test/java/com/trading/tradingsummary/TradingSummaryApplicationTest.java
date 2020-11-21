@@ -1,9 +1,9 @@
 package com.trading.tradingsummary;
 
-import com.trading.tradingsummary.processor.FileProcessor;
+import com.trading.tradingsummary.output.OutputWriter;
+import com.trading.tradingsummary.processor.InputFileProcessor;
 import com.trading.tradingsummary.util.FileHelper;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -14,11 +14,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -35,7 +35,9 @@ public class TradingSummaryApplicationTest {
     @Mock
     Reader reader;
     @Mock
-    FileProcessor fileProcessor;
+    InputFileProcessor inputFileProcessor;
+    @Mock
+    OutputWriter outputWriter;
 
     @Test
     public void shouldProcessAndWait() throws Exception {
@@ -43,20 +45,21 @@ public class TradingSummaryApplicationTest {
         try (MockedStatic<Files> filesMockedStatic = Mockito.mockStatic(Files.class)) {
             filesMockedStatic.when(() -> Files.lines(any())).thenReturn(mockStream);
             given(mockStream.count()).willReturn(10l);
-            TradingSummaryApplication application =  Mockito.spy(new TradingSummaryApplication());
+            TradingSummaryApplication application = Mockito.spy(new TradingSummaryApplication());
             application.fileHelper = fileHelper;
-            application.inputFilePath="abc";
-            application.fileProcessor = fileProcessor;
+            application.inputFilePath = "abc";
+            application.inputFileProcessor = inputFileProcessor;
+            application.outputWriter = outputWriter;
 
             given(fileHelper.getFileReader(any())).willReturn(reader);
-            doNothing().when(fileProcessor).process(reader);
+            doNothing().when(inputFileProcessor).process(reader);
             doNothing().when(application).exitApplication();
             doNothing().when(application).waitOnLatch();
 
-           application.run(new String[]{""});
+            application.run(new String[]{""});
 
-           verify(fileProcessor).process(reader);
-           verify(application).waitOnLatch();
+            verify(inputFileProcessor).process(reader);
+            verify(application).waitOnLatch();
 
             TradingSummaryApplication.countDownLatch = null;
 

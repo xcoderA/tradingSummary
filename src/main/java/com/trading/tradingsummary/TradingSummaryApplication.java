@@ -2,7 +2,7 @@ package com.trading.tradingsummary;
 
 import com.trading.tradingsummary.output.OutputAggregator;
 import com.trading.tradingsummary.output.OutputWriter;
-import com.trading.tradingsummary.processor.FileProcessor;
+import com.trading.tradingsummary.processor.InputFileProcessor;
 import com.trading.tradingsummary.util.FileHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,26 @@ public class TradingSummaryApplication implements CommandLineRunner {
     }
 
     @Autowired
-    FileProcessor fileProcessor;
+    InputFileProcessor inputFileProcessor;
+
+    @Autowired
+    OutputWriter outputWriter;
 
     protected static CountDownLatch countDownLatch;
 
     @Value("${input.file.path:Input.txt}")
     String inputFilePath;
 
-    FileHelper fileHelper = new FileHelper();
+    @Autowired
+    FileHelper fileHelper;
 
+    /**
+     * Initialize the countdownLatch with count equal to number of lines in the file.
+     * @param filePath
+     * @throws IOException
+     */
     protected void initCountDownLatch(String filePath) throws IOException {
+        log.debug("Initializing countDownLatch");
         Stream<String> fileStream = Files.lines(Paths.get(filePath));
         long lineCount = fileStream.count();
         log.info("The file has {} lines", lineCount);
@@ -48,6 +58,9 @@ public class TradingSummaryApplication implements CommandLineRunner {
         TradingSummaryApplication.countDownLatch = new CountDownLatch((int) lineCount);
     }
 
+    /**
+     * count down the latch
+     */
     public static void countDown() {
         TradingSummaryApplication.countDownLatch.countDown();
     }
@@ -56,18 +69,25 @@ public class TradingSummaryApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Reader reader = fileHelper.getFileReader(inputFilePath);
         initCountDownLatch(inputFilePath);
-        fileProcessor.process(reader);
+        inputFileProcessor.process(reader);
         waitOnLatch();
-        new OutputWriter(OutputAggregator.outputList).createOutputFile();
+        outputWriter.createOutputFile(OutputAggregator.outputList);
         exitApplication();
     }
+
+    /**
+     * wait for threads to finish processing the lines
+     * @throws InterruptedException
+     */
     public void waitOnLatch() throws InterruptedException {
         TradingSummaryApplication.countDownLatch.await();
     }
 
+    /**
+     * Exit the application when processing is finished
+     */
     public void exitApplication() {
         System.exit(0);
     }
-
 
 }
