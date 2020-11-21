@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutputWriterTest {
@@ -51,6 +50,19 @@ public class OutputWriterTest {
         verify(writer).write(outputLineCaptor.capture());
         assertThat(outputLineCaptor.getValue(), Matchers.is("abc,def,10\n"));
 
+    }
+
+    @Test
+    public void shouldHandleExceptionsInWrite() throws IOException {
+        given(fileHelper.getOutputWriter()).willReturn(writer);
+        outputWriter.fileHelper = fileHelper;
+        doThrow(IOException.class).when(writer).write(anyString());
+
+        outputWriter.createOutputFile(outputList);
+
+        verify(writer).write(outputLineCaptor.capture());
+
+        assertThat(outputLineCaptor.getValue(), Matchers.is("abc,def,10\n"));
     }
 
 
