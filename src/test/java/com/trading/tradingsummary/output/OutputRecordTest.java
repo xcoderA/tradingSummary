@@ -51,6 +51,20 @@ public class OutputRecordTest {
     }
 
     @Test
+    public void shouldBeEqualToItself() {
+        OutputRecord outputRecord = new OutputRecord("abc", "def", 100);
+
+        assertThat(outputRecord.equals(outputRecord), is(true));
+    }
+
+    @Test
+    public void shouldNotBeEqualToNull() {
+        OutputRecord outputRecord = new OutputRecord("abc", "def", 100);
+
+        assertThat(outputRecord.equals(null), is(false));
+    }
+
+    @Test
     public void shouldIncrementTransactionAmount() {
         OutputRecord outputRecord = new OutputRecord("abc", "def", 100);
         outputRecord.incrementTransactionAmount(100);

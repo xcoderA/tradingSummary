@@ -17,10 +17,14 @@ public class OutputRecord {
 
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
         if (!(o instanceof OutputRecord)) {
             return false;
         }
-        if (this.clientInformation.equals(((OutputRecord) o).clientInformation) && this.productInformation.equals(((OutputRecord) o).productInformation)) {
+        OutputRecord outputRecord = (OutputRecord) o;
+        if (this.clientInformation.equals(outputRecord.clientInformation) && this.productInformation.equals(outputRecord.productInformation)) {
             return true;
         }
         return false;

@@ -1,7 +1,8 @@
 # TradingSummary
 
 ####Assumptions
-1.'QUANTITY SHORT SIGN' and 'QUANTITY LONG SIGN' are not relevant and should not be used.
+- 'QUANTITY SHORT SIGN' and 'QUANTITY LONG SIGN' are not relevant and should not be used.
+- The Input file will always be in correct format and present in the right path. Exceptions are not handled and program is expected to fail if file not present or in incorrect format.
 
 ####How to run
 #####Path of input file can be configured with the param application.properties file or with a VM parameter
